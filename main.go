@@ -7,20 +7,24 @@ import (
 
 	"weather-alert/alerts"
 	"weather-alert/config"
-	"weather-alert/notifier"
 	"weather-alert/services"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	fmt.Println("🔎 OPENWEATHER_API_KEY =", os.Getenv("OPENWEATHER_API_KEY"))
-
 	_ = godotenv.Load()
+
+	fmt.Println("🔎 OPENWEATHER_API_KEY =", os.Getenv("OPENWEATHER_API_KEY"))
 
 	locations, err := config.LoadLocations("config/locations.json")
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	emails, err := alerts.LoadEmails("config/emails.json")
+	if err != nil {
+		log.Fatal("❌ No se pudieron cargar los emails:", err)
 	}
 
 	for _, loc := range locations {
@@ -32,21 +36,12 @@ func main() {
 			continue
 		}
 
-		//print for test
 		fmt.Printf("📍 %s, %s: %.1f°C - %s\n",
 			weather.Name,
 			weather.Sys.Country,
 			weather.Main.Temp,
 			weather.Weather[0].Description)
 
-		shouldAlert, message := alerts.ShouldTriggerAlert(weather)
-		if shouldAlert {
-			err := notifier.SendWhatsAppAlert(message)
-			if err != nil {
-				log.Printf("❌ Error al enviar alerta: %v\n", err)
-			}
-		} else {
-			fmt.Println("✅ No se requiere alerta.")
-		}
+		alerts.ShouldTriggerAlert(weather, emails)
 	}
 }
