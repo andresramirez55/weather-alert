@@ -13,7 +13,6 @@ func ShouldTriggerAlert(weather *models.WeatherResponse) (bool, string) {
 	windSpeed := weather.Wind.Speed
 	temp := weather.Main.Temp
 
-	// Lógica simple: alerta si hay tormenta, granizo, viento fuerte o calor extremo
 	if condition == "thunderstorm" || strings.Contains(description, "hail") {
 		return true, fmt.Sprintf("⚠️ Alerta de tormenta en %s: %s (%.1f°C)", weather.Name, description, temp)
 	}

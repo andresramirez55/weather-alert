@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"weather-alert/alerts"
 	"weather-alert/config"
@@ -13,10 +14,11 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Printf("error cargar archivo")
-		log.Fatal("❌ Error cargando archivo .env")
+	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Println("⚠️  No se pudo cargar .env (modo local)")
+		}
 	}
 
 	locations, err := config.LoadLocations("config/locations.json")
