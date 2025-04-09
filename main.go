@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"weather-alert/alerts"
 	"weather-alert/config"
@@ -13,6 +14,8 @@ import (
 )
 
 func main() {
+	fmt.Println("🔎 OPENWEATHER_API_KEY =", os.Getenv("OPENWEATHER_API_KEY"))
+
 	_ = godotenv.Load()
 
 	locations, err := config.LoadLocations("config/locations.json")
