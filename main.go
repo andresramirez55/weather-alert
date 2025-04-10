@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"weather-alert/alerts"
 	"weather-alert/config"
@@ -15,8 +14,6 @@ import (
 func main() {
 	_ = godotenv.Load()
 
-	fmt.Println("🔎 OPENWEATHER_API_KEY =", os.Getenv("OPENWEATHER_API_KEY"))
-
 	locations, err := config.LoadLocations("config/locations.json")
 	if err != nil {
 		log.Fatal(err)
@@ -24,7 +21,7 @@ func main() {
 
 	emails, err := alerts.LoadEmails("config/emails.json")
 	if err != nil {
-		log.Fatal("❌ No se pudieron cargar los emails:", err)
+		log.Fatal("❌ error getting emails:", err)
 	}
 
 	for _, loc := range locations {
@@ -32,7 +29,7 @@ func main() {
 
 		weather, err := services.GetWeather(query)
 		if err != nil {
-			log.Printf("❌ Error al obtener clima para %s: %v\n", query, err)
+			log.Printf("❌ Error getting weather %s: %v\n", query, err)
 			continue
 		}
 
